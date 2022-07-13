@@ -8,7 +8,7 @@ export default class News extends Component {
     this.state = {
       articles: [],
       page: 1,
-      query: "ind",
+      query: "All",
       tpages: 0,
     };
   }
@@ -88,6 +88,9 @@ export default class News extends Component {
     });
     console.log("tpages", this.state.tpages);
   };
+
+
+
   render() {
     console.log(
       "page-no",
@@ -97,8 +100,8 @@ export default class News extends Component {
     );
     return (
       <>
-        <div className="w-full bg-gray-600">
-          <div className="navigation w-full 2xl:container mx-auto flex flex-col sm:flex-row gap-4 justify-between bg-gray-600 sticky z-10 top-0 py-4 text-white px-4">
+        <div className="w-full bg-gray-600 sticky opacity-90 top-0 z-10">
+          <div className="navigation w-full 2xl:container mx-auto flex flex-col sm:flex-row gap-4 justify-between bg-gray-600  py-4 text-white px-4">
             <form className="flex justify-center">
               <input
                 type="text"
