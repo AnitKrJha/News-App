@@ -2,7 +2,7 @@ import { Component } from "react";
 
 export default class NewsCard extends Component {
   render() {
-    let { headline, desc, urlImage, url } = this.props;
+    let { headline, desc, urlImage, url } = this.props; 
 
     return (
       <>

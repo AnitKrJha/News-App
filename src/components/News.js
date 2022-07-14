@@ -10,74 +10,75 @@ export default class News extends Component {
       page: 1,
       query: "All",
       tpages: 0,
+      active: "TopHeadlines",
+      activeUrl: "top-headlines",
     };
   }
 
   async componentDidMount() {
     console.log("cdm");
-    let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf`;
-    // let data = await fetch(url);
-    // let parsed = await data.json();
-    // this.setState({ articles: parsed.articles });
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    console.log(url);
+
     let data = await axios.get(url);
 
     let parsed = data.data;
-    this.setState({ articles: parsed.articles, tpages: parsed.totalResults });
+    this.setState({
+      articles: parsed.articles,
+      tpages: parsed.totalResults,
+    });
     console.log("tpages", this.state.tpages);
   }
-
+  //----------------Handle Next Buttons------------------
   handlNext = async () => {
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${
+      this.state.query
+    }&page=${
+      this.state.page + 1
+    }&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+
+    let data = await axios.get(url);
+    console.log("page", this.state.page);
+
+    let parsed = data.data;
+    console.log("page", this.state.page);
     this.setState({
+      articles: parsed.articles,
+      tpages: parsed.totalResults,
       page: this.state.page + 1,
     });
+  };
 
-    let url = `https://newsapi.org/v2/everything?language=en&q=${
+  //------------Handle Prev Button---------------
+  handlPrev = async () => {
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${
       this.state.query
-    }&page=${this.state.page + 1}&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf`;
-    // let data = await fetch(url);
-    // let parsed = await data.json();
-    // this.setState({ articles: parsed.articles });
+    }&page=${
+      this.state.page - 1
+    }&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+
     let data = await axios.get(url);
 
     let parsed = data.data;
-    this.setState({ articles: parsed.articles, tpages: parsed.totalResults });
-    console.log("tpages", this.state.tpages);
-  };
-  handlPrev = async () => {
     this.setState({
+      articles: parsed.articles,
+      tpages: parsed.totalResults,
       page: this.state.page - 1,
     });
-
-    let url = `https://newsapi.org/v2/everything?language=en&q=${
-      this.state.query
-    }&page=${this.state.page - 1}&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf`;
-
-    // let data = await fetch(url);
-    // let parsed = await data.json();
-    // this.setState({ articles: parsed.articles });
-    let data = await axios.get(url);
-
-    let parsed = data.data;
-    this.setState({ articles: parsed.articles, tpages: parsed.totalResults });
     console.log("tpages", this.state.tpages);
   };
-
+  //--------------Handle Input---------------------
   handleInput = (e) => {
     this.setState({
       query: e.target.value,
     });
   };
+  //-------Search--------------------------
   search = async (e) => {
     e.preventDefault();
     console.log(this.state.query);
-
-    this.setState({
-      page: 1,
-    });
-    let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=${this.state.page}&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf`;
-    // let data = await fetch(url);
-    // let parsed = await data.json();
-    // this.setState({ articles: parsed.articles });
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    console.log(url);
     let data = await axios.get(url);
 
     let parsed = data.data;
@@ -85,18 +86,51 @@ export default class News extends Component {
     this.setState({
       articles: parsed.articles,
       tpages: parsed.totalResults,
+      page: 1,
     });
     console.log("tpages", this.state.tpages);
   };
 
+  //Top-Headlines-------------------------
+  TopHeadlines = async (e) => {
+    let url = `https://newsapi.org/v2/top-headlines?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let data = await axios.get(url);
 
+    let parsed = data.data;
 
+    this.setState({
+      articles: parsed.articles,
+      tpages: parsed.totalResults,
+      active: "TopHeadlines",
+      activeUrl: "top-headlines",
+      page: 1,
+    });
+  };
+  //-----------Everything---------------
+  Everything = async (e) => {
+    let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let data = await axios.get(url);
+
+    let parsed = data.data;
+
+    this.setState({
+      articles: parsed.articles,
+      tpages: parsed.totalResults,
+      active: "Everything",
+      activeUrl: "everything",
+      page: 1,
+    });
+  };
+
+  //-----------------------------------------(RENDER)-----------------------------------
   render() {
     console.log(
       "page-no",
       this.state.page,
       "and search term",
-      this.state.query
+      this.state.query,
+      "tpages",
+      this.state.tpages
     );
     return (
       <>
@@ -119,6 +153,22 @@ export default class News extends Component {
                 Search
               </button>
             </form>
+            <div className="flex flex-1 justify-around">
+              <button
+                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500"
+                onClick={this.TopHeadlines}
+                disabled={this.state.active === "TopHeadlines"}
+              >
+                Top-Headlines
+              </button>
+              <button
+                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500"
+                onClick={this.Everything}
+                disabled={this.state.active === "Everything"}
+              >
+                Everything
+              </button>
+            </div>
             <div className="buttons  flex flex-row items-center gap-4 px-4 w-full sm:w-fit justify-between">
               <button
                 className="bg-black text-white p-2 rounded-sm disabled:bg-gray-400"
@@ -128,8 +178,9 @@ export default class News extends Component {
                 <i className="bx bx-left-arrow-alt"></i>Previous
               </button>
               <button
-                className="bg-black text-white p-2 rounded-sm"
+                className="bg-black text-white p-2 rounded-sm disabled:bg-gray-300"
                 onClick={this.handlNext}
+                disabled={this.state.page > Math.floor(this.state.tpages / 30)}
               >
                 Next <i className="bx bx-right-arrow-alt"></i>
               </button>
