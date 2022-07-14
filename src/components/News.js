@@ -1,6 +1,6 @@
 import { Component } from "react";
 import NewsCard from "./NewsCard";
-
+import Spinner from "./spinner";
 const axios = require("axios");
 export default class News extends Component {
   constructor() {
@@ -12,6 +12,7 @@ export default class News extends Component {
       tpages: 0,
       active: "TopHeadlines",
       activeUrl: "top-headlines",
+      loading: true,
     };
   }
 
@@ -20,7 +21,9 @@ export default class News extends Component {
     let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
     console.log(url);
 
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
     this.setState({
@@ -37,7 +40,9 @@ export default class News extends Component {
       this.state.page + 1
     }&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
 
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
     console.log("page", this.state.page);
 
     let parsed = data.data;
@@ -57,7 +62,9 @@ export default class News extends Component {
       this.state.page - 1
     }&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
 
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
     this.setState({
@@ -78,8 +85,11 @@ export default class News extends Component {
     e.preventDefault();
     console.log(this.state.query);
     let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
+
     console.log(url);
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
 
@@ -94,7 +104,9 @@ export default class News extends Component {
   //Top-Headlines-------------------------
   TopHeadlines = async (e) => {
     let url = `https://newsapi.org/v2/top-headlines?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
 
@@ -109,7 +121,9 @@ export default class News extends Component {
   //-----------Everything---------------
   Everything = async (e) => {
     let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
 
@@ -131,7 +145,9 @@ export default class News extends Component {
   // --------------SetPageSize------------------------
   setpageSize = async () => {
     let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=${this.state.page}&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await axios.get(url);
+    this.setState({ loading: false });
 
     let parsed = data.data;
     this.setState({
@@ -153,6 +169,7 @@ export default class News extends Component {
     );
     return (
       <>
+        
         <div className="w-full bg-gray-600 sticky bg-opacity-80 top-0 z-10">
           <div className="navigation  w-full 2xl:container mx-auto bg-opacity-0 flex flex-col sm:flex-row gap-4 justify-between bg-gray-600  py-4 text-white px-4 items-center">
             <form className="flex justify-center">
@@ -226,6 +243,7 @@ export default class News extends Component {
             </div>
           </div>
         </div>
+        {this.state.loading? <Spinner/> :""}
         <div className="flex gap-4 flex-wrap justify-evenly items-strech px-4">
           {this.state.articles.map((ele) => {
             return (
