@@ -237,6 +237,7 @@ export default class News extends Component {
                   this.state.page + 1 >
                   Math.floor(this.state.tpages / this.props.pageSize)
                 }
+                
               >
                 Next <i className="bx bx-right-arrow-alt"></i>
               </button>
