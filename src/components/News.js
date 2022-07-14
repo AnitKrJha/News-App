@@ -17,7 +17,7 @@ export default class News extends Component {
 
   async componentDidMount() {
     console.log("cdm");
-    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
     console.log(url);
 
     let data = await axios.get(url);
@@ -35,7 +35,7 @@ export default class News extends Component {
       this.state.query
     }&page=${
       this.state.page + 1
-    }&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    }&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
 
     let data = await axios.get(url);
     console.log("page", this.state.page);
@@ -55,7 +55,7 @@ export default class News extends Component {
       this.state.query
     }&page=${
       this.state.page - 1
-    }&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    }&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
 
     let data = await axios.get(url);
 
@@ -77,7 +77,7 @@ export default class News extends Component {
   search = async (e) => {
     e.preventDefault();
     console.log(this.state.query);
-    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
     console.log(url);
     let data = await axios.get(url);
 
@@ -93,7 +93,7 @@ export default class News extends Component {
 
   //Top-Headlines-------------------------
   TopHeadlines = async (e) => {
-    let url = `https://newsapi.org/v2/top-headlines?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let url = `https://newsapi.org/v2/top-headlines?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
     let data = await axios.get(url);
 
     let parsed = data.data;
@@ -108,7 +108,7 @@ export default class News extends Component {
   };
   //-----------Everything---------------
   Everything = async (e) => {
-    let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=1&apiKey=29213e0a795b4d6887bcb61ce2dd9bcf&pageSize=30`;
+    let url = `https://newsapi.org/v2/everything?language=en&q=${this.state.query}&page=1&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
     let data = await axios.get(url);
 
     let parsed = data.data;
@@ -122,6 +122,23 @@ export default class News extends Component {
     });
   };
 
+  // -----------Handel PageSize-----------------------
+  handlepagesize = async (e) => {
+    await this.props.setpageSize(() => e.target.value);
+    this.setpageSize();
+  };
+
+  // --------------SetPageSize------------------------
+  setpageSize = async () => {
+    let url = `https://newsapi.org/v2/${this.state.activeUrl}?language=en&q=${this.state.query}&page=${this.state.page}&apiKey=c27746dbeb80417dba8dd3b29ba74e84&pageSize=${this.props.pageSize}`;
+    let data = await axios.get(url);
+
+    let parsed = data.data;
+    this.setState({
+      articles: parsed.articles,
+    });
+  };
+
   //-----------------------------------------(RENDER)-----------------------------------
   render() {
     console.log(
@@ -130,12 +147,14 @@ export default class News extends Component {
       "and search term",
       this.state.query,
       "tpages",
-      this.state.tpages
+      this.state.tpages,
+      "pagesize",
+      this.props.pageSize
     );
     return (
       <>
-        <div className="w-full bg-gray-600 sticky opacity-90 top-0 z-10">
-          <div className="navigation w-full 2xl:container mx-auto flex flex-col sm:flex-row gap-4 justify-between bg-gray-600  py-4 text-white px-4">
+        <div className="w-full bg-gray-600 sticky bg-opacity-80 top-0 z-10">
+          <div className="navigation  w-full 2xl:container mx-auto bg-opacity-0 flex flex-col sm:flex-row gap-4 justify-between bg-gray-600  py-4 text-white px-4 items-center">
             <form className="flex justify-center">
               <input
                 type="text"
@@ -155,39 +174,59 @@ export default class News extends Component {
             </form>
             <div className="flex flex-1 justify-around">
               <button
-                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500"
+                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500 active:scale-95"
                 onClick={this.TopHeadlines}
                 disabled={this.state.active === "TopHeadlines"}
               >
                 Top-Headlines
               </button>
               <button
-                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500"
+                className="p-1 bg-black text-white rounded-md shadow-sm shadow-blue-300 disabled:border-b-4 border-b-blue-500 active:scale-95"
                 onClick={this.Everything}
                 disabled={this.state.active === "Everything"}
               >
                 Everything
               </button>
             </div>
+            <div className="Items">
+              <label for="items" className="text-white uppercase">
+                Item/page:
+              </label>
+
+              <select
+                name="pageSize"
+                id="items"
+                className="bg-black"
+                onChange={this.handlepagesize}
+              >
+                <option value={8}>8</option>
+                <option value={12}>12</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+              </select>
+            </div>
             <div className="buttons  flex flex-row items-center gap-4 px-4 w-full sm:w-fit justify-between">
               <button
-                className="bg-black text-white p-2 rounded-sm disabled:bg-gray-400"
+                className="bg-black text-white p-2 rounded-sm disabled:bg-gray-400 active:scale-95"
                 onClick={this.handlPrev}
                 disabled={this.state.page <= 1}
               >
                 <i className="bx bx-left-arrow-alt"></i>Previous
               </button>
               <button
-                className="bg-black text-white p-2 rounded-sm disabled:bg-gray-300"
+                className="bg-black text-white p-2 rounded-sm disabled:bg-gray-300 active:scale-95"
                 onClick={this.handlNext}
-                disabled={this.state.page > Math.floor(this.state.tpages / 30)}
+                disabled={
+                  this.state.page + 1 >
+                  Math.floor(this.state.tpages / this.props.pageSize)
+                }
               >
                 Next <i className="bx bx-right-arrow-alt"></i>
               </button>
             </div>
           </div>
         </div>
-        <div className="flex gap-4 flex-wrap justify-evenly items-center px-4">
+        <div className="flex gap-4 flex-wrap justify-evenly items-strech px-4">
           {this.state.articles.map((ele) => {
             return (
               ele.url &&

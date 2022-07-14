@@ -7,7 +7,7 @@ export default class NewsCard extends Component {
     return (
       <>
         
-          <div className="w-96 bg-gray-200 rounded-2xl  flex flex-col gap-4 shadow-xl shadow-gray-400 scale-95 hover:scale-100 active:shadow-none transition-all cursor-pointer">
+          <div className="w-96 bg-gray-200 rounded-2xl  flex flex-col gap-4 justify-between  shadow-xl shadow-gray-400 scale-95 hover:scale-100 active:shadow-none transition-all cursor-pointer">
             <img src={urlImage} alt="" className="aspect-video rounded-t-2xl" />
             <div className="content w-full px-4">
               <h1 className="headline text-2xl font-semibold my-2">
